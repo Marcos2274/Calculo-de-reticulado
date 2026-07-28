@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculadora de estructuras reticuladas - Análisis estructural de cerchas y armaduras">
+    <title>Cálculo de Reticulado</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <h1 class="logo">📐 Cálculo de Reticulado</h1>
+                <ul class="nav-links">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#calculadora">Calculadora</a></li>
+                    <li><a href="#sobre">Sobre</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Sección Hero -->
+        <section id="inicio" class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Análisis Estructural de Reticulados</h2>
+                    <p>Calcula fuerzas, desplazamientos y reacciones en estructuras reticuladas de forma rápida y precisa</p>
+                    <a href="#calculadora" class="btn btn-primary">Comenzar a Calcular</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Calculadora -->
+        <section id="calculadora" class="calculator-section">
+            <div class="container">
+                <h2>Calculadora de Reticulado</h2>
+                
+                <div class="calculator-grid">
+                    <!-- Panel de entrada -->
+                    <div class="input-panel">
+                        <h3>Configuración de la Estructura</h3>
+                        
+                        <div class="form-group">
+                            <label for="num-nodos">Número de Nodos:</label>
+                            <input type="number" id="num-nodos" min="2" max="20" value="4">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="num-elementos">Número de Elementos:</label>
+                            <input type="number" id="num-elementos" min="1" max="50" value="5">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="modulo-elasticidad">Módulo de Elasticidad (GPa):</label>
+                            <input type="number" id="modulo-elasticidad" step="0.1" value="200">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="area-seccion">Área de Sección (cm²):</label>
+                            <input type="number" id="area-seccion" step="0.1" value="10">
+                        </div>
+
+                        <button class="btn btn-primary" id="generar-estructura">Generar Estructura</button>
+                        <button class="btn btn-secondary" id="calcular">Calcular</button>
+                    </div>
+
+                    <!-- Panel de visualización -->
+                    <div class="visualization-panel">
+                        <h3>Visualización</h3>
+                        <canvas id="canvas-estructura" width="600" height="400"></canvas>
+                    </div>
+                </div>
+
+                <!-- Resultados -->
+                <div class="results-panel" id="resultados" style="display: none;">
+                    <h3>Resultados del Análisis</h3>
+                    <div id="resultados-contenido"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Sobre el Proyecto -->
+        <section id="sobre" class="about-section">
+            <div class="container">
+                <h2>Sobre el Proyecto</h2>
+                <div class="about-grid">
+                    <div class="about-card">
+                        <div class="card-icon">🔧</div>
+                        <h3>Análisis Estructural</h3>
+                        <p>Realiza cálculos precisos de fuerzas internas y desplazamientos en estructuras reticuladas utilizando el método de rigidez directa.</p>
+                    </div>
+                    <div class="about-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Visualización Interactiva</h3>
+                        <p>Visualiza tu estructura en tiempo real con un canvas interactivo que muestra nodos, elementos y resultados.</p>
+                    </div>
+                    <div class="about-card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Rápido y Eficiente</h3>
+                        <p>Obtén resultados instantáneos sin necesidad de software pesado o instalaciones complicadas.</p>
+                    </div>
+                </div>
+
+                <div class="features">
+                    <h3>Características</h3>
+                    <ul>
+                        <li>✅ Cálculo de reacciones en los apoyos</li>
+                        <li>✅ Determinación de fuerzas axiales en barras</li>
+                        <li>✅ Cálculo de desplazamientos nodales</li>
+                        <li>✅ Visualización gráfica de la estructura</li>
+                        <li>✅ Soporte para múltiples configuraciones</li>
+                        <li>✅ Exportación de resultados</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Cálculo de Reticulado. Todos los derechos reservados.</p>
+            <p>Desarrollado con HTML, CSS y JavaScript</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
