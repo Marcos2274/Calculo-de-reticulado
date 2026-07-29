@@ -3,1828 +3,419 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Reticulados - Método de Nudos</title>
+    <meta name="description" content="Calculadora de Reticulados por Nudos - Herramienta profesional para análisis de estructuras isostáticas">
+    <title>Calculadora de Reticulados por Nudos - Portal</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f4f7f6; color: #333; padding: 20px; }
-        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --purple: #8b5cf6;
+            --purple-dark: #7c3aed;
+            --blue: #3b82f6;
+            --blue-dark: #2563eb;
+            --green: #10b981;
+            --green-dark: #059669;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--gray-800);
+        }
+
         .watermark {
             position: fixed;
-            top: 10px;
-            right: 15px;
-            font-size: 0.8rem;
-            color: rgba(0, 0, 0, 0.4);
+            top: 15px;
+            right: 20px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
             font-weight: 600;
             z-index: 9999;
             pointer-events: none;
             user-select: none;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
-        header { text-align: center; margin-bottom: 20px; }
-        h1 { color: #1e3a8a; font-size: 1.8rem; }
-        p { color: #4b5563; font-size: 0.95rem; }
-        
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            max-width: 1300px;
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 40px 20px;
         }
 
-        .panel {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .panel-full {
-            max-width: 1300px;
-            margin: 20px auto 0 auto;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            margin-top: 15px;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 5px;
-        }
-
-        .btn-group-header {
-            display: flex;
-            gap: 5px;
-        }
-
-        h2 { font-size: 1.1rem; color: #1f2937; }
-
-        .form-row { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
-        input, select, textarea { width: 100%; padding: 7px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.9rem; }
-        textarea { resize: vertical; font-family: monospace; font-size: 0.8rem; }
-        .table-input { width: 65px; padding: 3px 5px; font-size: 0.85rem; text-align: center; }
-
-        .btn {
-            background-color: #2563eb;
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
             color: white;
-            border: none;
-            padding: 9px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9rem;
-            white-space: nowrap;
-        }
-        .btn:hover { background-color: #1d4ed8; }
-
-        .btn-undo { background-color: #f59e0b; padding: 4px 8px; font-size: 0.75rem; }
-        .btn-undo:hover { background-color: #d97706; }
-
-        .btn-redo { background-color: #10b981; padding: 4px 8px; font-size: 0.75rem; }
-        .btn-redo:hover { background-color: #059669; }
-
-        .btn-action {
-            color: white;
-            border: none;
-            border-radius: 3px;
-            padding: 3px 6px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            margin: 0 2px;
-            font-weight: bold;
-        }
-        .btn-edit { background-color: #3b82f6; }
-        .btn-edit:hover { background-color: #2563eb; }
-        .btn-save { background-color: #10b981; }
-        .btn-save:hover { background-color: #059669; }
-        .btn-cancel { background-color: #6b7280; }
-        .btn-cancel:hover { background-color: #4b5563; }
-        .btn-del { background-color: #ef4444; }
-        .btn-del:hover { background-color: #dc2626; }
-
-        .btn-clear { background-color: #ef4444; margin-top: 10px; }
-        .btn-clear:hover { background-color: #dc2626; }
-
-        .btn-storage { background-color: #8b5cf6; }
-        .btn-storage:hover { background-color: #7c3aed; }
-
-        .btn-zoom { background-color: #4b5563; padding: 5px 10px; font-size: 0.85rem; }
-        .btn-zoom:hover { background-color: #374151; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.85rem; }
-        th, td { border: 1px solid #ddd; padding: 6px; text-align: center; }
-        th { background-color: #f3f4f6; }
-
-        canvas {
-            width: 100%;
-            height: 380px;
-            background-color: #111827;
-            border-radius: 6px;
         }
 
-        #resultCanvas {
-            height: 1100px;
-            cursor: grab;
-        }
-        
-        #resultCanvas:active {
-            cursor: grabbing;
-        }
-
-        .tag-traccion { color: #2563eb; font-weight: bold; }
-        .tag-compresion { color: #dc2626; font-weight: bold; }
-        .tag-cero { color: #6b7280; font-weight: bold; }
-
-        .box-subm {
-            background: #f8fafc;
-            border: 1px dashed #cbd5e1;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 12px;
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            line-height: 1.2;
         }
 
-        .info-note {
-            background-color: #f0f9ff;
-            border-left: 4px solid #0284c7;
-            padding: 8px 12px;
-            margin-bottom: 12px;
-            font-size: 0.82rem;
-            color: #0369a1;
-            border-radius: 0 4px 4px 0;
-            line-height: 1.4;
-        }
-
-        .iso-panel {
-            border: 2px solid #cbd5e1;
-            background-color: #ffffff;
-            border-radius: 8px;
-            padding: 12px 15px;
+        .hero .subtitle {
+            font-size: 1.4rem;
             margin-bottom: 15px;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .hero .description {
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: var(--purple-dark);
+            padding: 20px 50px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 12px;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            background: var(--gray-50);
+        }
+
+        .cta-button:active {
+            transform: translateY(-1px);
+        }
+
+        /* Content Section */
+        .content-section {
+            background: white;
+            border-radius: 20px;
+            padding: 50px 40px;
+            margin-top: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .content-section h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            color: var(--gray-900);
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .feature-card {
+            background: var(--gray-50);
+            padding: 30px;
+            border-radius: 12px;
+            border: 2px solid var(--gray-200);
             transition: all 0.3s ease;
         }
-        .iso-status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.85rem;
-            color: #fff;
-            margin-top: 5px;
-        }
-        .status-isostatica { background-color: #10b981; }
-        .status-hipostatica { background-color: #ef4444; }
-        .status-hiperestatica { background-color: #3b82f6; }
 
-        details.table-details {
-            margin-top: 8px;
-            background: #fafafa;
-            border: 1px solid #e5e7eb;
-            border-radius: 6px;
-            padding: 6px 10px;
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--purple);
         }
 
-        details.table-details summary {
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #374151;
-            user-select: none;
-            outline: none;
-            padding: 4px 0;
-        }
-
-        details.table-details summary:hover {
-            color: #2563eb;
-        }
-
-        .legend-bar {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            align-items: center;
+        .feature-icon {
+            font-size: 3rem;
             margin-bottom: 15px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            flex-wrap: wrap;
+            display: block;
         }
-        .legend-item { display: flex; align-items: center; gap: 6px; }
-        .legend-color { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
 
-        .zoom-controls, .axis-controls {
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: var(--gray-900);
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: var(--gray-600);
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        /* Capabilities List */
+        .capabilities {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            padding: 35px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+        }
+
+        .capabilities h3 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: var(--purple-dark);
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .capabilities-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .capability-item {
             display: flex;
-            gap: 6px;
             align-items: center;
-            background: #e5e7eb;
-            padding: 4px 10px;
-            border-radius: 6px;
+            gap: 12px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--gray-800);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
-        .reactions-table-container {
-            margin-top: 20px;
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .type-badge-reaccion {
-            background-color: #f59e0b;
-            color: #fff;
-            font-size: 0.75rem;
-            padding: 2px 6px;
-            border-radius: 4px;
+        .capability-item::before {
+            content: "✓";
             font-weight: bold;
+            color: var(--green);
+            font-size: 1.3rem;
+            flex-shrink: 0;
         }
 
-        .type-badge-carga {
-            background-color: #6b7280;
-            color: #fff;
-            font-size: 0.75rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: bold;
+        /* Tech Stack */
+        .tech-stack {
+            text-align: center;
+            padding: 30px;
+            background: var(--gray-50);
+            border-radius: 12px;
+        }
+
+        .tech-stack h3 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: var(--gray-800);
+            font-weight: 600;
+        }
+
+        .tech-badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .tech-badge {
+            background: white;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            color: var(--gray-700);
+            border: 2px solid var(--gray-200);
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: white;
+            margin-top: 50px;
+        }
+
+        .footer p {
+            margin: 8px 0;
+            opacity: 0.9;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            transition: border-color 0.3s ease;
+        }
+
+        .footer a:hover {
+            border-bottom-color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero .description {
+                font-size: 1rem;
+            }
+
+            .cta-button {
+                padding: 16px 35px;
+                font-size: 1.1rem;
+            }
+
+            .content-section {
+                padding: 30px 20px;
+            }
+
+            .content-section h2 {
+                font-size: 1.8rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .capabilities-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero, .content-section {
+            animation: fadeInUp 0.8s ease-out;
         }
     </style>
 </head>
 <body>
+    <div class="watermark">Desarrollado por Marcos Di Dio</div>
 
-    <div class="watermark">Hecho por Marcos Di Dio</div>
-
-    <header>
-        <h1>Cálculo de Esfuerzos en Reticulados por Nudos</h1>
-        <p>Cargá la geometría, diferenciá Apoyos vs Cargas Externas y calculá la estructura</p>
-    </header>
-
-    <div class="grid-container">
-        
-        <!-- PANEL IZQUIERDO -->
-        <div class="panel">
-            
-            <div class="box-subm" style="background: #f3e8ff; border-color: #c084fc;">
-                <p style="font-size: 0.85rem; font-weight: bold; margin-bottom: 8px; color: #6b21a8;">💾 Guardar y Cargar Proyecto</p>
-                
-                <div class="form-row">
-                    <button class="btn btn-storage" onclick="exportJSON()" style="width: 50%;">💾 Descargar Archivo</button>
-                    <button class="btn btn-storage" onclick="document.getElementById('fileInput').click()" style="width: 50%;">📂 Subir Archivo (.json)</button>
-                    <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="importFile(event)">
-                </div>
-
-                <details style="margin-top: 5px; font-size: 0.8rem; color: #6b21a8;">
-                    <summary style="cursor: pointer; font-weight: bold;">Ver opción alternativa por texto (Copiar / Pegar)</summary>
-                    <div style="margin-top: 6px;">
-                        <button class="btn btn-storage" onclick="copyToClipboard()" style="width: 100%; margin-bottom: 6px; font-size: 0.8rem; padding: 5px;">📋 Copiar Código al Portapapeles</button>
-                        <textarea id="jsonBox" rows="12" style="min-height: 220px;" placeholder="O pegá acá el código JSON directamente..."></textarea>
-                        <button class="btn" style="background-color: #6b21a8; width: 100%; margin-top: 4px; font-size: 0.8rem; padding: 5px;" onclick="importJSONText()">📥 Cargar desde Texto</button>
-                    </div>
-                </details>
-            </div>
-
-            <!-- PANEL DE DIAGNÓSTICO ESTRUCTURAL -->
-            <div id="isoPanel" class="iso-panel">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h2 style="font-size: 1rem; color: #1e293b;">📊 Diagnóstico de Isoestaticidad</h2>
-                    <span id="isoBadge" class="iso-status-badge status-hipostatica">Incompleta</span>
-                </div>
-                <div style="margin-top: 8px; font-size: 0.85rem; color: #475569; line-height: 1.5;">
-                    • <b>Nudos (n):</b> <span id="isoN">0</span> | 
-                    <b>Barras (b):</b> <span id="isoB">0</span> | 
-                    <b>Restricciones de Apoyo (r):</b> <span id="isoR">0</span><br>
-                    • <b>Fórmula:</b> <code style="font-size: 0.9rem; font-weight: bold;">GL = 2n - b - r</code><br>
-                    • <b>Grados de Libertad (GL):</b> <b id="isoGLVal" style="font-size: 1rem;">0</b>
-                </div>
-                <div id="isoMsg" style="margin-top: 6px; font-size: 0.8rem; font-style: italic; color: #64748b;">
-                    Cargá nudos y barras para evaluar la estructura.
-                </div>
-            </div>
-
-            <div class="section-header">
-                <h2>1. Nudos (Coordenadas)</h2>
-                <div class="btn-group-header">
-                    <button class="btn btn-undo" onclick="undo()">↩ Deshacer</button>
-                    <button class="btn btn-redo" onclick="redo()">↪ Rehacer</button>
-                </div>
-            </div>
-            <div class="form-row">
-                <input type="number" id="nodeIdInput" placeholder="Nudo ID (Opcional)" style="width: 30%;">
-                <input type="number" id="nodeX" step="any" placeholder="X (m)">
-                <input type="number" id="nodeY" step="any" placeholder="Y (m)">
-                <button class="btn" onclick="addNode()">+ Nudo</button>
-            </div>
-
-            <details class="table-details" open>
-                <summary>📊 Ver / Ocultar Tabla de Nudos</summary>
-                <table id="nodesTable">
-                    <thead>
-                        <tr><th>Nudo</th><th>X (m)</th><th>Y (m)</th><th>Acciones</th></tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </details>
-
-            <div class="section-header">
-                <h2>2. Barras (Conectividad)</h2>
-                <div class="btn-group-header">
-                    <button class="btn btn-undo" onclick="undo()">↩ Deshacer</button>
-                    <button class="btn btn-redo" onclick="redo()">↪ Rehacer</button>
-                </div>
-            </div>
-            <div class="form-row">
-                <input type="number" id="barN1" placeholder="Nudo Inicio">
-                <input type="number" id="barN2" placeholder="Nudo Fin">
-                <button class="btn" onclick="addBar()">+ Barra</button>
-            </div>
-
-            <details class="table-details" open>
-                <summary>📊 Ver / Ocultar Tabla de Barras</summary>
-                <table id="barsTable">
-                    <thead>
-                        <tr><th>Barra</th><th>Nudo A</th><th>Nudo B</th><th>Acciones</th></tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </details>
-
-            <div class="section-header">
-                <h2>3. Cargas Externas y Apoyos (Reacciones)</h2>
-                <div class="btn-group-header">
-                    <button class="btn btn-undo" onclick="undo()">↩ Deshacer</button>
-                    <button class="btn btn-redo" onclick="redo()">↪ Rehacer</button>
-                </div>
-            </div>
-
-            <div class="info-note">
-                💡 <b>Diferenciación importante:</b><br>
-                • Seleccioná <b>"Reacción de Apoyo"</b> para vincular la restricción a la ecuación de isostaticidad ($r$).<br>
-                • Seleccioná <b>"Carga Externa"</b> para fuerzas aplicadas al reticulado (no alteran los grados de libertad).
-            </div>
-            
-            <div class="box-subm">
-                <p style="font-size: 0.85rem; font-weight: bold; margin-bottom: 6px; color: #3b82f6;">Opción A: Por Componentes Directas (Fx / Fy)</p>
-                <div class="form-row">
-                    <input type="number" id="forceNode" placeholder="Nudo ID" style="width: 20%;">
-                    <input type="text" id="forceLabel" placeholder="Nombre (ej: HA, VA)" style="width: 30%;">
-                    <select id="forceType" style="width: 50%;">
-                        <option value="reaccion">📌 Reacción de Apoyo</option>
-                        <option value="carga">⬇️ Carga Externa</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <input type="number" id="forceFx" step="any" placeholder="Fx (t)">
-                    <input type="number" id="forceFy" step="any" placeholder="Fy (t)">
-                </div>
-                <button class="btn" style="width: 100%;" onclick="addForceDirect()">+ Agregar Fuerza / Reacción</button>
-            </div>
-
-            <div class="box-subm">
-                <p style="font-size: 0.85rem; font-weight: bold; margin-bottom: 6px; color: #10b981;">Opción B: Fuerza Inclinada por Geometría/Pendiente</p>
-                <div class="form-row">
-                    <input type="number" id="incNode" placeholder="Nudo">
-                    <input type="text" id="incLabel" placeholder="Nombre">
-                    <select id="incType">
-                        <option value="carga">⬇️ Carga Externa</option>
-                        <option value="reaccion">📌 Reacción de Apoyo</option>
-                    </select>
-                </div>
-                <div class="form-row">
-                    <input type="number" id="incF" step="any" placeholder="Fuerza P (t)" style="width: 34%;">
-                    <input type="number" id="incDx" step="any" placeholder="Prop. X (dx)" style="width: 33%;">
-                    <input type="number" id="incDy" step="any" placeholder="Prop. Y (dy)" style="width: 33%;">
-                </div>
-                <button class="btn" style="background-color: #10b981; width: 100%;" onclick="addForceInc()">+ Proyectar e Inserte</button>
-            </div>
-
-            <details class="table-details" open>
-                <summary>📊 Ver / Ocultar Tabla de Cargas y Reacciones</summary>
-                <table id="forcesTable">
-                    <thead>
-                        <tr><th>Nudo</th><th>Nombre</th><th>Tipo</th><th>Fx (t)</th><th>Fy (t)</th><th>Acciones</th></tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </details>
-
-            <button class="btn" style="background-color: #059669; width: 100%; margin-top: 18px; padding: 12px; font-size: 1rem;" onclick="calculate()">
-                Calcular Esfuerzos Internos
-            </button>
-            
-            <button class="btn btn-clear" style="width: 100%;" onclick="clearAll()">
-                Borrar Todo
-            </button>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>📐 Calculadora de Reticulados por Nudos</h1>
+            <p class="subtitle">Herramienta Profesional para Análisis Estructural</p>
+            <p class="description">
+                Diseñada para estudiantes e ingenieros civiles y estructurales que necesitan 
+                analizar y calcular estructuras reticuladas isostáticas de manera rápida y precisa.
+            </p>
+            <a href="./app/calculadora.html" class="cta-button">
+                🚀 Empezar a Calcular
+            </a>
         </div>
+    </section>
 
-        <!-- PANEL DERECHO -->
-        <div class="panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h2>Geometría de la Estructura</h2>
-                <div class="axis-controls">
-                    <span style="font-size: 0.85rem; font-weight: bold;">📐 Ejes:</span>
-                    <select id="axisOrientationPreview" style="padding: 3px 6px; font-size: 0.8rem; width: auto;" onchange="syncAxisSelection(this.value)">
-                        <option value="std">+X Dir / +Y Arriba (Estándar)</option>
-                        <option value="invY">+X Dir / +Y Abajo</option>
-                        <option value="invX">+X Izq / +Y Arriba</option>
-                        <option value="invBoth">+X Izq / +Y Abajo</option>
-                    </select>
+    <!-- Content Section -->
+    <div class="container">
+        <div class="content-section">
+            <h2>¿Qué es esta herramienta?</h2>
+            
+            <!-- Feature Cards -->
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🎯</span>
+                    <h3>Método de Nudos</h3>
+                    <p>Implementación completa del método clásico de análisis estructural por nudos, 
+                    con resolución iterativa de ecuaciones de equilibrio.</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3>Diagnóstico Automático</h3>
+                    <p>Evaluación instantánea de isoestaticidad mediante la fórmula GL = 2n - b - r. 
+                    Detecta estructuras isostáticas, hipostáticas e hiperestáticas.</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🎨</span>
+                    <h3>Visualización Interactiva</h3>
+                    <p>Canvas HTML5 con zoom, paneo y múltiples orientaciones de ejes. 
+                    Visualiza fuerzas de tracción y compresión en tiempo real.</p>
                 </div>
             </div>
-            <canvas id="canvas"></canvas>
 
-            <h2 style="margin-top: 18px; margin-bottom: 5px;">Tabla de Esfuerzos Internos</h2>
-            <details class="table-details" open>
-                <summary>📊 Ver / Ocultar Resultados de Esfuerzos</summary>
-                <table id="resultsTable">
-                    <thead>
-                        <tr><th>Barra</th><th>Nudos</th><th>Esfuerzo (t)</th><th>Estado</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td colspan="4">Cargá la estructura y presioná "Calcular Esfuerzos"</td></tr>
-                    </tbody>
-                </table>
-            </details>
-        </div>
-
-    </div>
-
-    <!-- PANEL INFERIOR COMPLETO -->
-    <div class="panel panel-full">
-        <h2>Diagrama de Esfuerzos de la Estructura (Vista Ampliada)</h2>
-        
-        <div class="legend-bar" style="margin-top: 10px;">
-            <div class="legend-item"><span class="legend-color" style="background-color: #3b82f6;"></span> Tracción</div>
-            <div class="legend-item"><span class="legend-color" style="background-color: #ef4444;"></span> Compresión</div>
-            <div class="legend-item"><span class="legend-color" style="background-color: #9ca3af;"></span> Barra Nula (0 t)</div>
-            <div class="legend-item"><span class="legend-color" style="background-color: #f59e0b;"></span> Fuerzas / Reacciones</div>
-
-            <div class="axis-controls">
-                <span>📐 Ejes:</span>
-                <select id="axisOrientationResults" style="padding: 3px 6px; font-size: 0.8rem; width: auto;" onchange="syncAxisSelection(this.value)">
-                    <option value="std">+X Dir / +Y Arriba (Estándar)</option>
-                    <option value="invY">+X Dir / +Y Abajo</option>
-                    <option value="invX">+X Izq / +Y Arriba</option>
-                    <option value="invBoth">+X Izq / +Y Abajo</option>
-                </select>
+            <!-- Capabilities -->
+            <div class="capabilities">
+                <h3>Capacidades de la Aplicación</h3>
+                <div class="capabilities-list">
+                    <div class="capability-item">Definición gráfica de nodos y barras</div>
+                    <div class="capability-item">Cálculo de esfuerzos internos (tracción/compresión)</div>
+                    <div class="capability-item">Diferenciación entre reacciones y cargas externas</div>
+                    <div class="capability-item">Guardado y carga de proyectos en JSON</div>
+                    <div class="capability-item">Sistema de deshacer/rehacer ilimitado</div>
+                    <div class="capability-item">Edición en línea de todos los elementos</div>
+                    <div class="capability-item">Fuerzas por componentes o por geometría</div>
+                    <div class="capability-item">Tablas detalladas de resultados</div>
+                    <div class="capability-item">Exportación de datos del proyecto</div>
+                    <div class="capability-item">4 orientaciones de ejes configurables</div>
+                </div>
             </div>
 
-            <div class="zoom-controls">
-                <span>🔍 Escala:</span>
-                <button class="btn btn-zoom" onclick="changeZoom(-0.15)">➖ Achicar</button>
-                <span id="zoomVal" style="width: 45px; text-align: center;">100%</span>
-                <button class="btn btn-zoom" onclick="changeZoom(0.15)">➕ Agrandar</button>
-                <button class="btn btn-zoom" style="background-color: #2563eb;" onclick="resetZoomAndCenter()">🎯 Centrar Vista</button>
+            <!-- Tech Stack -->
+            <div class="tech-stack">
+                <h3>Tecnologías Utilizadas</h3>
+                <div class="tech-badges">
+                    <span class="tech-badge">HTML5</span>
+                    <span class="tech-badge">CSS3</span>
+                    <span class="tech-badge">JavaScript</span>
+                    <span class="tech-badge">Canvas API</span>
+                    <span class="tech-badge">Responsive Design</span>
+                </div>
             </div>
-        </div>
 
-        <canvas id="resultCanvas"></canvas>
-
-        <div class="reactions-table-container">
-            <h3 style="font-size: 1rem; color: #1f2937; margin-bottom: 8px;">📌 Referencia de Reacciones y Cargas Externas</h3>
-            <details class="table-details" open>
-                <summary>📊 Ver / Ocultar Referencias de Reacciones</summary>
-                <table id="reactionsLegendTable">
-                    <thead>
-                        <tr>
-                            <th>Identificador</th>
-                            <th>Nudo</th>
-                            <th>Categoría</th>
-                            <th>Eje / Componente</th>
-                            <th>Sentido / Dirección</th>
-                            <th>Valor (t)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td colspan="6">No hay cargas o reacciones registradas</td></tr>
-                    </tbody>
-                </table>
-            </details>
+            <!-- CTA Bottom -->
+            <div style="text-align: center; margin-top: 50px;">
+                <a href="./app/calculadora.html" class="cta-button">
+                    ⚡ Abrir la Aplicación
+                </a>
+            </div>
         </div>
     </div>
 
-    <script>
-        let nodes = [];
-        let bars = [];
-        let forces = [];
-        let calculatedResults = null;
-
-        let editingNode = null;
-        let editingBar = null;
-        let editingForce = null;
-
-        let undoStack = [];
-        let redoStack = [];
-
-        let structureScaleFactor = 1.0;
-        let panOffsetX = 0;
-        let panOffsetY = 0;
-        let isDragging = false;
-        let dragStartX = 0;
-        let dragStartY = 0;
-
-        function formatNumber(val, decimals = 3) {
-            if (val === null || val === undefined || isNaN(val)) return "0,000";
-            return val.toFixed(decimals).replace('.', ',');
-        }
-
-        window.addEventListener('beforeunload', (e) => {
-            if (nodes.length > 0 || bars.length > 0 || forces.length > 0) {
-                e.preventDefault();
-                e.returnValue = '¿Estás seguro de que querés salir? Acordate de guardar el archivo para no perder los datos del proyecto.';
-                return e.returnValue;
-            }
-        });
-
-        function syncAxisSelection(val) {
-            document.getElementById('axisOrientationPreview').value = val;
-            document.getElementById('axisOrientationResults').value = val;
-            drawPreviewCanvas();
-            drawResultsCanvas();
-        }
-
-        function getAxisDirections() {
-            const mode = document.getElementById('axisOrientationPreview').value;
-            let dirX = 1;  
-            let dirY = 1;  
-            
-            if (mode === 'invY') dirY = -1;
-            if (mode === 'invX') dirX = -1;
-            if (mode === 'invBoth') { dirX = -1; dirY = -1; }
-
-            return { dirX, dirY };
-        }
-
-        function changeZoom(delta) {
-            structureScaleFactor = Math.max(0.3, Math.min(4.0, structureScaleFactor + delta));
-            document.getElementById('zoomVal').innerText = `${Math.round(structureScaleFactor * 100)}%`;
-            drawResultsCanvas();
-        }
-
-        function resetZoomAndCenter() {
-            structureScaleFactor = 1.0;
-            panOffsetX = 0;
-            panOffsetY = 0;
-            document.getElementById('zoomVal').innerText = '100%';
-            drawResultsCanvas();
-        }
-
-        window.addEventListener('load', () => {
-            const resCanvas = document.getElementById('resultCanvas');
-
-            resCanvas.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                dragStartX = e.clientX - panOffsetX;
-                dragStartY = e.clientY - panOffsetY;
-            });
-
-            window.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                panOffsetX = e.clientX - dragStartX;
-                panOffsetY = e.clientY - dragStartY;
-                drawResultsCanvas();
-            });
-
-            window.addEventListener('mouseup', () => {
-                isDragging = false;
-            });
-        });
-
-        function getLetterLabel(index) {
-            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            if (index < 26) return letters[index];
-            return letters[Math.floor(index / 26) - 1] + letters[index % 26];
-        }
-
-        function saveState() {
-            undoStack.push(JSON.stringify({ nodes, bars, forces }));
-            redoStack = [];
-        }
-
-        function undo() {
-            if (undoStack.length === 0) return;
-            redoStack.push(JSON.stringify({ nodes, bars, forces }));
-            const prevState = JSON.parse(undoStack.pop());
-            nodes = prevState.nodes;
-            bars = prevState.bars;
-            forces = prevState.forces;
-            calculatedResults = null;
-            cancelAllEdits();
-            updateAll();
-        }
-
-        function redo() {
-            if (redoStack.length === 0) return;
-            undoStack.push(JSON.stringify({ nodes, bars, forces }));
-            const nextState = JSON.parse(redoStack.pop());
-            nodes = nextState.nodes;
-            bars = nextState.bars;
-            forces = nextState.forces;
-            calculatedResults = null;
-            cancelAllEdits();
-            updateAll();
-        }
-
-        function cancelAllEdits() {
-            editingNode = null;
-            editingBar = null;
-            editingForce = null;
-        }
-
-        function getStructureJSON() {
-            return JSON.stringify({ nodes, bars, forces }, null, 2);
-        }
-
-        function exportJSON() {
-            if (nodes.length === 0 && bars.length === 0) {
-                alert('No hay datos cargados para guardar.');
-                return;
-            }
-
-            let filename = prompt('Ingresá el nombre para el archivo:', 'reticulado_estructura');
-            if (filename === null) return; 
-
-            filename = filename.trim();
-            if (!filename) filename = 'reticulado_estructura';
-            
-            if (!filename.toLowerCase().endsWith('.json')) {
-                filename += '.json';
-            }
-
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(getStructureJSON());
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", filename);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-        }
-
-        function importFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const content = e.target.result;
-                processAndLoadJSON(content);
-                event.target.value = '';
-            };
-            reader.readAsText(file);
-        }
-
-        function processAndLoadJSON(rawText) {
-            try {
-                const parsed = JSON.parse(rawText);
-                if (Array.isArray(parsed.nodes) && Array.isArray(parsed.bars) && Array.isArray(parsed.forces)) {
-                    saveState();
-                    nodes = parsed.nodes;
-                    bars = parsed.bars;
-                    forces = parsed.forces.map(f => ({ ...f, isReaction: f.isReaction !== undefined ? f.isReaction : true }));
-                    calculatedResults = null;
-                    cancelAllEdits();
-                    updateAll();
-
-                    document.querySelector('#resultsTable tbody').innerHTML = '<tr><td colspan="4">Cargá la estructura y presioná "Calcular Esfuerzos"</td></tr>';
-                    document.querySelector('#reactionsLegendTable tbody').innerHTML = '<tr><td colspan="6">No hay cargas o reacciones registradas</td></tr>';
-                } else {
-                    alert('El archivo no contiene un formato de reticulado válido.');
-                }
-            } catch (e) {
-                alert('Error al leer el archivo. Asegurate de que sea un archivo JSON válido.');
-            }
-        }
-
-        function copyToClipboard() {
-            if (nodes.length === 0 && bars.length === 0) {
-                alert('No hay datos cargados para copiar.');
-                return;
-            }
-            const jsonStr = getStructureJSON();
-            navigator.clipboard.writeText(jsonStr).then(() => {
-                document.getElementById('jsonBox').value = jsonStr;
-                alert('¡Datos copiados al portapapeles!');
-            });
-        }
-
-        function importJSONText() {
-            const rawText = document.getElementById('jsonBox').value.trim();
-            if (!rawText) {
-                alert('Por favor pegá el texto JSON en la caja antes de cargar.');
-                return;
-            }
-            processAndLoadJSON(rawText);
-        }
-
-        function addNode() {
-            const idInput = parseInt(document.getElementById('nodeIdInput').value);
-            const x = parseFloat(document.getElementById('nodeX').value);
-            const y = parseFloat(document.getElementById('nodeY').value);
-            
-            if (isNaN(x) || isNaN(y)) {
-                alert('Por favor ingresá coordenadas válidas para X e Y.');
-                return;
-            }
-
-            let nodeId = !isNaN(idInput) && idInput > 0 ? idInput : (nodes.length > 0 ? Math.max(...nodes.map(n => n.id)) + 1 : 1);
-
-            if (nodes.some(n => n.id === nodeId)) {
-                alert(`⚠️ Ya existe un nudo con el ID N${nodeId}.`);
-                return;
-            }
-
-            const duplicate = nodes.some(n => Math.abs(n.x - x) < 1e-5 && Math.abs(n.y - y) < 1e-5);
-            if (duplicate) {
-                alert(`⚠️ Ya existe un nudo en las coordenadas (${x}, ${y}).`);
-                return;
-            }
-
-            saveState();
-            nodes.push({ id: nodeId, x, y });
-            calculatedResults = null;
-            document.getElementById('nodeIdInput').value = '';
-            document.getElementById('nodeX').value = '';
-            document.getElementById('nodeY').value = '';
-            updateAll();
-        }
-
-        function editNode(index) { editingNode = index; updateNodesTable(); }
-        function cancelEditNode() { editingNode = null; updateNodesTable(); }
-
-        function saveEditNode(index) {
-            const newX = parseFloat(document.getElementById(`editNodeX_${index}`).value);
-            const newY = parseFloat(document.getElementById(`editNodeY_${index}`).value);
-            if (!isNaN(newX) && !isNaN(newY)) {
-                const duplicate = nodes.some((n, i) => i !== index && Math.abs(n.x - newX) < 1e-5 && Math.abs(n.y - newY) < 1e-5);
-                if (duplicate) {
-                    alert(`⚠️ Ya existe otro nudo en las coordenadas (${newX}, ${newY}).`);
-                    return;
-                }
-
-                saveState();
-                nodes[index].x = newX;
-                nodes[index].y = newY;
-                calculatedResults = null;
-                editingNode = null;
-                updateAll();
-            }
-        }
-
-        function deleteNode(index) {
-            saveState();
-            const nodeId = nodes[index].id;
-            nodes.splice(index, 1);
-            bars = bars.filter(b => b.n1 !== nodeId && b.n2 !== nodeId);
-            forces = forces.filter(f => f.node !== nodeId);
-            calculatedResults = null;
-            updateAll();
-        }
-
-        function addBar() {
-            const n1 = parseInt(document.getElementById('barN1').value);
-            const n2 = parseInt(document.getElementById('barN2').value);
-
-            if (!n1 || !n2 || !nodes.some(n => n.id === n1) || !nodes.some(n => n.id === n2) || n1 === n2) {
-                alert('Ingresá dos números de nudos existentes y diferentes.');
-                return;
-            }
-
-            const duplicate = bars.some(b => (b.n1 === n1 && b.n2 === n2) || (b.n1 === n2 && b.n2 === n1));
-            if (duplicate) {
-                alert(`⚠️ Ya existe una barra conectando N${n1} con N${n2}.`);
-                return;
-            }
-
-            saveState();
-            const nextBarId = bars.length > 0 ? Math.max(...bars.map(b => b.id)) + 1 : 1;
-            bars.push({ id: nextBarId, n1, n2 });
-            calculatedResults = null;
-            document.getElementById('barN1').value = '';
-            document.getElementById('barN2').value = '';
-            updateAll();
-        }
-
-        function editBar(index) { editingBar = index; updateBarsTable(); }
-        function cancelEditBar() { editingBar = null; updateBarsTable(); }
-
-        function saveEditBar(index) {
-            const newN1 = parseInt(document.getElementById(`editBarN1_${index}`).value);
-            const newN2 = parseInt(document.getElementById(`editBarN2_${index}`).value);
-            if (nodes.some(n => n.id === newN1) && nodes.some(n => n.id === newN2) && newN1 !== newN2) {
-                const duplicate = bars.some((b, i) => i !== index && ((b.n1 === newN1 && b.n2 === newN2) || (b.n1 === newN2 && b.n2 === newN1)));
-                if (duplicate) {
-                    alert(`⚠️ Ya existe otra barra entre N${newN1} y N${newN2}.`);
-                    return;
-                }
-
-                saveState();
-                bars[index].n1 = newN1;
-                bars[index].n2 = newN2;
-                calculatedResults = null;
-                editingBar = null;
-                updateAll();
-            } else {
-                alert('Nudos no válidos para la barra.');
-            }
-        }
-
-        function deleteBar(index) {
-            saveState();
-            bars.splice(index, 1);
-            calculatedResults = null;
-            updateAll();
-        }
-
-        function checkForceOverlap(node, newFx, newFy) {
-            const existing = forces.find(f => f.node === node);
-            if (!existing) return true;
-
-            if (newFx !== 0 && Math.abs(existing.fx) > 1e-6) {
-                alert(`⚠️ El Nudo ${node} ya tiene un componente en X (Fx = ${formatNumber(existing.fx)} t). Modificá el existente en la tabla.`);
-                return false;
-            }
-            if (newFy !== 0 && Math.abs(existing.fy) > 1e-6) {
-                alert(`⚠️ El Nudo ${node} ya tiene un componente en Y (Fy = ${formatNumber(existing.fy)} t). Modificá el existente en la tabla.`);
-                return false;
-            }
-            return true;
-        }
-
-        function addForceDirect() {
-            const node = parseInt(document.getElementById('forceNode').value);
-            const label = document.getElementById('forceLabel').value.trim();
-            const isReaction = document.getElementById('forceType').value === 'reaccion';
-            const fx = parseFloat(document.getElementById('forceFx').value) || 0;
-            const fy = parseFloat(document.getElementById('forceFy').value) || 0;
-
-            if (!node || !nodes.some(n => n.id === node)) {
-                alert('Ingresá un Nudo ID existente.');
-                return;
-            }
-            if (fx === 0 && fy === 0) {
-                alert('Ingresá un valor para Fx o Fy.');
-                return;
-            }
-
-            if (!checkForceOverlap(node, fx, fy)) return;
-
-            saveState();
-            const existingIndex = forces.findIndex(f => f.node === node);
-            if (existingIndex !== -1) {
-                forces[existingIndex].fx += fx;
-                forces[existingIndex].fy += fy;
-                if (label) forces[existingIndex].label = label;
-                forces[existingIndex].isReaction = isReaction;
-            } else {
-                forces.push({ node, label: label || '', isReaction, fx, fy });
-            }
-
-            calculatedResults = null;
-            document.getElementById('forceNode').value = '';
-            document.getElementById('forceLabel').value = '';
-            document.getElementById('forceFx').value = '';
-            document.getElementById('forceFy').value = '';
-            updateAll();
-        }
-
-        function addForceInc() {
-            const node = parseInt(document.getElementById('incNode').value);
-            const label = document.getElementById('incLabel').value.trim();
-            const isReaction = document.getElementById('incType').value === 'reaccion';
-            const P = parseFloat(document.getElementById('incF').value);
-            const dx = parseFloat(document.getElementById('incDx').value);
-            const dy = parseFloat(document.getElementById('incDy').value);
-
-            if (!node || !nodes.some(n => n.id === node) || isNaN(P) || isNaN(dx) || isNaN(dy)) {
-                alert('Por favor completá todos los campos con un nudo válido.');
-                return;
-            }
-
-            const H = Math.hypot(dx, dy);
-            if (H === 0) {
-                alert('Las proporciones dx y dy no pueden ser ambas 0.');
-                return;
-            }
-
-            const fx = P * (dx / H);
-            const fy = P * (dy / H);
-
-            if (!checkForceOverlap(node, fx, fy)) return;
-
-            saveState();
-            const existingIndex = forces.findIndex(f => f.node === node);
-            if (existingIndex !== -1) {
-                forces[existingIndex].fx += fx;
-                forces[existingIndex].fy += fy;
-                if (label) forces[existingIndex].label = label;
-                forces[existingIndex].isReaction = isReaction;
-            } else {
-                forces.push({ node, label: label || '', isReaction, fx, fy });
-            }
-
-            calculatedResults = null;
-            document.getElementById('incNode').value = '';
-            document.getElementById('incLabel').value = '';
-            document.getElementById('incF').value = '';
-            document.getElementById('incDx').value = '';
-            document.getElementById('incDy').value = '';
-            updateAll();
-        }
-
-        function editForce(index) { editingForce = index; updateForcesTable(); }
-        function cancelEditForce() { editingForce = null; updateForcesTable(); }
-
-        function saveEditForce(index) {
-            const newN = parseInt(document.getElementById(`editForceN_${index}`).value);
-            const newLabel = document.getElementById(`editForceLabel_${index}`).value.trim();
-            const newIsReaction = document.getElementById(`editForceType_${index}`).value === 'reaccion';
-            const newFx = parseFloat(document.getElementById(`editForceFx_${index}`).value) || 0;
-            const newFy = parseFloat(document.getElementById(`editForceFy_${index}`).value) || 0;
-
-            if (nodes.some(n => n.id === newN) && (newFx !== 0 || newFy !== 0)) {
-                saveState();
-                forces[index].node = newN;
-                forces[index].label = newLabel;
-                forces[index].isReaction = newIsReaction;
-                forces[index].fx = newFx;
-                forces[index].fy = newFy;
-                calculatedResults = null;
-                editingForce = null;
-                updateAll();
-            } else {
-                alert('Carga o Nudo no válido.');
-            }
-        }
-
-        function deleteForce(index) {
-            saveState();
-            forces.splice(index, 1);
-            calculatedResults = null;
-            updateAll();
-        }
-
-        /* EVALUACIÓN DE ISOSTATICIDAD AGRUPADA POR NUDO */
-        function evaluateIsostaticity() {
-            const n = nodes.length;
-            const b = bars.length;
-
-            // Agrupar reacciones por ID de nudo
-            const nodeReactions = {};
-            forces.forEach(f => {
-                if (f.isReaction !== false) {
-                    if (!nodeReactions[f.node]) {
-                        nodeReactions[f.node] = { hasFx: false, hasFy: false };
-                    }
-                    if (Math.abs(f.fx) > 1e-6) nodeReactions[f.node].hasFx = true;
-                    if (Math.abs(f.fy) > 1e-6) nodeReactions[f.node].hasFy = true;
-                }
-            });
-
-            // Sumar restricciones activas acumuladas por nudo
-            let r = 0;
-            Object.values(nodeReactions).forEach(rec => {
-                if (rec.hasFx) r++;
-                if (rec.hasFy) r++;
-            });
-
-            const gl = 2 * n - b - r;
-
-            document.getElementById('isoN').innerText = n;
-            document.getElementById('isoB').innerText = b;
-            document.getElementById('isoR').innerText = r;
-            document.getElementById('isoGLVal').innerText = gl;
-
-            const badge = document.getElementById('isoBadge');
-            const msg = document.getElementById('isoMsg');
-            const panel = document.getElementById('isoPanel');
-
-            if (n === 0 || b === 0) {
-                badge.className = "iso-status-badge status-hipostatica";
-                badge.innerText = "Incompleta";
-                msg.innerText = "Cargá nudos y barras para evaluar la estructura.";
-                panel.style.borderColor = "#cbd5e1";
-                return { gl, isostática: false };
-            }
-
-            if (gl === 0) {
-                badge.className = "iso-status-badge status-isostatica";
-                badge.innerText = "Isostática";
-                msg.innerText = "✅ Estructura isostática perfecta (GL = 0). Apoyos y barras equilibrados.";
-                panel.style.borderColor = "#10b981";
-            } else if (gl > 0) {
-                badge.className = "iso-status-badge status-hipostatica";
-                badge.innerText = `Hipostática (${gl} GL)`;
-                msg.innerText = `⚠️ La estructura tiene ${gl} grado(s) de libertad libre(s). Faltan barras o restricciones de apoyo.`;
-                panel.style.borderColor = "#ef4444";
-            } else {
-                badge.className = "iso-status-badge status-hiperestatica";
-                badge.innerText = `Hiperestática (${Math.abs(gl)}°)`;
-                msg.innerText = `ℹ️ Grado de hiperestaticidad = ${Math.abs(gl)}. Sobran barras o apoyos restringidos.`;
-                panel.style.borderColor = "#3b82f6";
-            }
-
-            return { gl, isostática: gl === 0 };
-        }
-
-        function updateAll() {
-            updateNodesTable();
-            updateBarsTable();
-            updateForcesTable();
-            evaluateIsostaticity();
-            drawPreviewCanvas();
-            drawResultsCanvas();
-        }
-
-        function updateNodesTable() {
-            const tbody = document.querySelector('#nodesTable tbody');
-            tbody.innerHTML = nodes.map((n, idx) => {
-                if (editingNode === idx) {
-                    return `<tr>
-                        <td><b>N${n.id}</b></td>
-                        <td><input type="number" step="any" id="editNodeX_${idx}" class="table-input" value="${n.x}"></td>
-                        <td><input type="number" step="any" id="editNodeY_${idx}" class="table-input" value="${n.y}"></td>
-                        <td>
-                            <button class="btn-action btn-save" onclick="saveEditNode(${idx})">💾</button>
-                            <button class="btn-action btn-cancel" onclick="cancelEditNode()">❌</button>
-                        </td>
-                    </tr>`;
-                }
-                return `<tr>
-                    <td>N${n.id}</td>
-                    <td>${n.x}</td>
-                    <td>${n.y}</td>
-                    <td>
-                        <button class="btn-action btn-edit" onclick="editNode(${idx})">✏️</button>
-                        <button class="btn-action btn-del" onclick="deleteNode(${idx})">✖</button>
-                    </td>
-                </tr>`;
-            }).join('');
-        }
-
-        function updateBarsTable() {
-            const tbody = document.querySelector('#barsTable tbody');
-            tbody.innerHTML = bars.map((b, idx) => {
-                if (editingBar === idx) {
-                    return `<tr>
-                        <td><b>B${b.id}</b></td>
-                        <td><input type="number" id="editBarN1_${idx}" class="table-input" value="${b.n1}"></td>
-                        <td><input type="number" id="editBarN2_${idx}" class="table-input" value="${b.n2}"></td>
-                        <td>
-                            <button class="btn-action btn-save" onclick="saveEditBar(${idx})">💾</button>
-                            <button class="btn-action btn-cancel" onclick="cancelEditBar()">❌</button>
-                        </td>
-                    </tr>`;
-                }
-                return `<tr>
-                    <td>B${b.id}</td>
-                    <td>N${b.n1}</td>
-                    <td>N${b.n2}</td>
-                    <td>
-                        <button class="btn-action btn-edit" onclick="editBar(${idx})">✏️</button>
-                        <button class="btn-action btn-del" onclick="deleteBar(${idx})">✖</button>
-                    </td>
-                </tr>`;
-            }).join('');
-        }
-
-        function updateForcesTable() {
-            const tbody = document.querySelector('#forcesTable tbody');
-            tbody.innerHTML = forces.map((f, idx) => {
-                const isRec = f.isReaction !== false;
-                if (editingForce === idx) {
-                    return `<tr>
-                        <td><input type="number" id="editForceN_${idx}" class="table-input" value="${f.node}"></td>
-                        <td><input type="text" id="editForceLabel_${idx}" class="table-input" style="width:60px" value="${f.label || ''}"></td>
-                        <td>
-                            <select id="editForceType_${idx}" style="font-size:0.75rem; padding: 2px;">
-                                <option value="reaccion" ${isRec ? 'selected' : ''}>Reacción</option>
-                                <option value="carga" ${!isRec ? 'selected' : ''}>Carga</option>
-                            </select>
-                        </td>
-                        <td><input type="number" step="any" id="editForceFx_${idx}" class="table-input" value="${f.fx}"></td>
-                        <td><input type="number" step="any" id="editForceFy_${idx}" class="table-input" value="${f.fy}"></td>
-                        <td>
-                            <button class="btn-action btn-save" onclick="saveEditForce(${idx})">💾</button>
-                            <button class="btn-action btn-cancel" onclick="cancelEditForce()">❌</button>
-                        </td>
-                    </tr>`;
-                }
-                return `<tr>
-                    <td>N${f.node}</td>
-                    <td><b>${f.label || '-'}</b></td>
-                    <td>${isRec ? '<span class="type-badge-reaccion">Reacción</span>' : '<span class="type-badge-carga">Carga Externa</span>'}</td>
-                    <td>${formatNumber(f.fx)}</td>
-                    <td>${formatNumber(f.fy)}</td>
-                    <td>
-                        <button class="btn-action btn-edit" onclick="editForce(${idx})">✏️</button>
-                        <button class="btn-action btn-del" onclick="deleteForce(${idx})">✖</button>
-                    </td>
-                </tr>`;
-            }).join('');
-        }
-
-        function clearAll() {
-            if (nodes.length > 0 || bars.length > 0 || forces.length > 0) {
-                const confirmClear = confirm('⚠️ ¿Estás seguro de que querés borrar toda la estructura y los datos cargados?');
-                if (confirmClear) {
-                    saveState();
-                    nodes = []; bars = []; forces = []; calculatedResults = null;
-                    cancelAllEdits();
-                    updateAll();
-                    document.querySelector('#resultsTable tbody').innerHTML = '<tr><td colspan="4">Cargá la estructura y presioná "Calcular Esfuerzos"</td></tr>';
-                }
-            }
-        }
-
-        function drawArrow(ctx, fromX, fromY, toX, toY, headLength = 10) {
-            const angle = Math.atan2(toY - fromY, toX - fromX);
-            
-            ctx.beginPath();
-            ctx.moveTo(fromX, fromY);
-            ctx.lineTo(toX, toY);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(toX, toY);
-            ctx.lineTo(toX - headLength * Math.cos(angle - Math.PI / 6), toY - headLength * Math.sin(angle - Math.PI / 6));
-            ctx.lineTo(toX - headLength * Math.cos(angle + Math.PI / 6), toY - headLength * Math.sin(angle + Math.PI / 6));
-            ctx.lineTo(toX, toY);
-            ctx.fill();
-        }
-
-        function drawForceBadge(ctx, text, x, y, isReaction = true) {
-            ctx.save();
-            ctx.font = 'bold 12px sans-serif';
-            const metrics = ctx.measureText(text);
-            const textWidth = metrics.width;
-            const textHeight = 14;
-            const paddingX = 6;
-            const paddingY = 3;
-
-            const rectX = x - textWidth / 2 - paddingX;
-            const rectY = y - textHeight / 2 - paddingY;
-            const rectW = textWidth + 2 * paddingX;
-            const rectH = textHeight + 2 * paddingY;
-
-            ctx.fillStyle = '#111827';
-            ctx.strokeStyle = isReaction ? '#f59e0b' : '#38bdf8';
-            ctx.lineWidth = 1.5;
-
-            ctx.beginPath();
-            if (ctx.roundRect) {
-                ctx.roundRect(rectX, rectY, rectW, rectH, 4);
-            } else {
-                ctx.rect(rectX, rectY, rectW, rectH);
-            }
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.fillStyle = isReaction ? '#fbbf24' : '#38bdf8';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(text, x, y);
-            ctx.restore();
-        }
-
-        function drawAxisIndicator(ctx) {
-            ctx.save();
-            const originX = 45;
-            const originY = 50;
-            const axisLength = 30;
-
-            const { dirX, dirY } = getAxisDirections();
-
-            ctx.lineWidth = 2;
-
-            ctx.strokeStyle = '#60a5fa';
-            ctx.fillStyle = '#60a5fa';
-            drawArrow(ctx, originX, originY, originX + dirX * axisLength, originY, 6);
-            ctx.font = 'bold 12px sans-serif';
-            ctx.textAlign = dirX > 0 ? 'left' : 'right';
-            ctx.fillText('X', originX + dirX * (axisLength + 8), originY + 4);
-
-            ctx.strokeStyle = '#f87171';
-            ctx.fillStyle = '#f87171';
-            drawArrow(ctx, originX, originY, originX, originY - dirY * axisLength, 6);
-            ctx.textAlign = 'center';
-            ctx.fillText('Y', originX, originY - dirY * (axisLength + 10));
-
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.arc(originX, originY, 3, 0, 2 * Math.PI);
-            ctx.fill();
-
-            ctx.restore();
-        }
-
-        function getCanvasScaling(canvas, padding = 70, userMultiplier = 1.0, offsetX = 0, offsetY = 0) {
-            const xs = nodes.map(n => n.x);
-            const ys = nodes.map(n => n.y);
-            const minX = Math.min(...xs), maxX = Math.max(...xs);
-            const minY = Math.min(...ys), maxY = Math.max(...ys);
-
-            const scaleX = (canvas.width - 2 * padding) / ((maxX - minX) || 1);
-            const scaleY = (canvas.height - 2 * padding) / ((maxY - minY) || 1);
-            const baseScale = Math.min(scaleX, scaleY);
-            
-            const scale = baseScale * userMultiplier;
-
-            const midX = (minX + maxX) / 2;
-            const midY = (minY + maxY) / 2;
-
-            const canvasMidX = canvas.width / 2 + offsetX;
-            const canvasMidY = canvas.height / 2 + offsetY;
-
-            const toCanvasX = (x) => canvasMidX + (x - midX) * scale;
-            const toCanvasY = (y) => canvasMidY - (y - midY) * scale;
-
-            return { toCanvasX, toCanvasY };
-        }
-
-        function getSmartForceDirection(nodeId, forceDx, forceDy, toCanvasX, toCanvasY) {
-            const n = nodes.find(item => item.id === nodeId);
-            if (!n) return { drawTowardsNode: true };
-
-            const nx = toCanvasX(n.x);
-            const ny = toCanvasY(n.y);
-
-            const connectedBars = bars.filter(b => b.n1 === nodeId || b.n2 === nodeId);
-            const barAngles = connectedBars.map(b => {
-                const otherId = b.n1 === nodeId ? b.n2 : b.n1;
-                const otherNode = nodes.find(item => item.id === otherId);
-                return Math.atan2(toCanvasY(otherNode.y) - ny, toCanvasX(otherNode.x) - nx);
-            });
-
-            const angleTowards = Math.atan2(-forceDy, -forceDx);
-            const angleAway = Math.atan2(forceDy, forceDx);
-
-            function getMinAngularDistance(targetAngle) {
-                if (barAngles.length === 0) return Math.PI;
-                let minDiff = Infinity;
-                barAngles.forEach(bAngle => {
-                    let diff = Math.abs(targetAngle - bAngle);
-                    while (diff > Math.PI) diff -= 2 * Math.PI;
-                    diff = Math.abs(diff);
-                    if (diff < minDiff) minDiff = diff;
-                });
-                return minDiff;
-            }
-
-            const distTowards = getMinAngularDistance(angleTowards);
-            const distAway = getMinAngularDistance(angleAway);
-
-            return { drawTowardsNode: distTowards >= distAway };
-        }
-
-        function drawPreviewCanvas() {
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawAxisIndicator(ctx);
-
-            if (nodes.length === 0) return;
-
-            const { toCanvasX, toCanvasY } = getCanvasScaling(canvas, 50, 1.0);
-            const { dirX, dirY } = getAxisDirections();
-
-            ctx.strokeStyle = '#9ca3af';
-            ctx.lineWidth = 2;
-            bars.forEach(b => {
-                const n1 = nodes.find(n => n.id === b.n1);
-                const n2 = nodes.find(n => n.id === b.n2);
-                if (n1 && n2) {
-                    ctx.beginPath();
-                    ctx.moveTo(toCanvasX(n1.x), toCanvasY(n1.y));
-                    ctx.lineTo(toCanvasX(n2.x), toCanvasY(n2.y));
-                    ctx.stroke();
-                }
-            });
-
-            const arrowLen = 30;
-            const nodeOffset = 7;
-
-            forces.forEach(f => {
-                const n = nodes.find(node => node.id === f.node);
-                if (!n) return;
-                const nx = toCanvasX(n.x);
-                const ny = toCanvasY(n.y);
-
-                const isRec = f.isReaction !== false;
-                ctx.strokeStyle = isRec ? '#f59e0b' : '#38bdf8';
-                ctx.fillStyle = isRec ? '#f59e0b' : '#38bdf8';
-                ctx.lineWidth = 2;
-
-                if (Math.abs(f.fx) > 1e-3) {
-                    const canvasDx = (f.fx * dirX) > 0 ? 1 : -1;
-                    const { drawTowardsNode } = getSmartForceDirection(f.node, canvasDx, 0, toCanvasX, toCanvasY);
-
-                    if (drawTowardsNode) {
-                        const endX = nx - canvasDx * nodeOffset;
-                        const startX = endX - canvasDx * arrowLen;
-                        drawArrow(ctx, startX, ny, endX, ny, 7);
-                    } else {
-                        const startX = nx + canvasDx * nodeOffset;
-                        const endX = startX + canvasDx * arrowLen;
-                        drawArrow(ctx, startX, ny, endX, ny, 7);
-                    }
-                }
-                if (Math.abs(f.fy) > 1e-3) {
-                    const canvasDy = (f.fy * dirY) > 0 ? -1 : 1;
-                    const { drawTowardsNode } = getSmartForceDirection(f.node, 0, canvasDy, toCanvasX, toCanvasY);
-
-                    if (drawTowardsNode) {
-                        const endY = ny - canvasDy * nodeOffset;
-                        const startY = endY - canvasDy * arrowLen;
-                        drawArrow(ctx, nx, startY, nx, endY, 7);
-                    } else {
-                        const startY = ny + canvasDy * nodeOffset;
-                        const endY = startY + canvasDy * arrowLen;
-                        drawArrow(ctx, nx, startY, nx, endY, 7);
-                    }
-                }
-            });
-
-            nodes.forEach(n => {
-                ctx.fillStyle = '#60a5fa';
-                ctx.beginPath();
-                ctx.arc(toCanvasX(n.x), toCanvasY(n.y), 6, 0, 2 * Math.PI);
-                ctx.fill();
-
-                ctx.fillStyle = '#f3f4f6';
-                ctx.font = '10px sans-serif';
-                ctx.fillText(`N${n.id}`, toCanvasX(n.x) + 8, toCanvasY(n.y) - 8);
-            });
-        }
-
-        function drawResultsCanvas() {
-            const canvas = document.getElementById('resultCanvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
-
-            const bgColor = '#111827';
-            ctx.fillStyle = bgColor;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            drawAxisIndicator(ctx);
-
-            if (nodes.length === 0) return;
-
-            const { toCanvasX, toCanvasY } = getCanvasScaling(canvas, 120, structureScaleFactor, panOffsetX, panOffsetY);
-            const { dirX, dirY } = getAxisDirections();
-
-            // 1. Dibujar Barras
-            bars.forEach((b, idx) => {
-                const n1 = nodes.find(n => n.id === b.n1);
-                const n2 = nodes.find(n => n.id === b.n2);
-                if (!n1 || !n2) return;
-
-                const x1 = toCanvasX(n1.x);
-                const y1 = toCanvasY(n1.y);
-                const x2 = toCanvasX(n2.x);
-                const y2 = toCanvasY(n2.y);
-
-                let color = '#9ca3af';
-
-                if (calculatedResults && calculatedResults[idx] !== undefined) {
-                    const val = calculatedResults[idx];
-                    if (Math.abs(val) > 1e-3) {
-                        color = val > 0 ? '#3b82f6' : '#ef4444';
-                    }
-                }
-
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
-                ctx.stroke();
-
-                if (calculatedResults && calculatedResults[idx] !== undefined) {
-                    const val = calculatedResults[idx];
-                    if (Math.abs(val) > 1e-3) {
-                        const len = Math.hypot(x2 - x1, y2 - y1);
-                        if (len > 40) {
-                            const angle = Math.atan2(y2 - y1, x2 - x1);
-                            const nodeOffset = 18;
-                            const arrowHead = 15;
-
-                            ctx.save();
-                            ctx.fillStyle = color;
-                            ctx.strokeStyle = color;
-                            ctx.lineWidth = 2;
-
-                            if (val > 0) {
-                                const p1X = x1 + nodeOffset * Math.cos(angle);
-                                const p1Y = y1 + nodeOffset * Math.sin(angle);
-                                drawArrow(ctx, p1X, p1Y, p1X + 12 * Math.cos(angle), p1Y + 12 * Math.sin(angle), arrowHead);
-
-                                const p2X = x2 - nodeOffset * Math.cos(angle);
-                                const p2Y = y2 - nodeOffset * Math.sin(angle);
-                                drawArrow(ctx, p2X, p2Y, p2X - 12 * Math.cos(angle), p2Y - 12 * Math.sin(angle), arrowHead);
-                            } else {
-                                const p1X = x1 + nodeOffset * Math.cos(angle);
-                                const p1Y = y1 + nodeOffset * Math.sin(angle);
-                                drawArrow(ctx, p1X + 12 * Math.cos(angle), p1Y + 12 * Math.sin(angle), p1X, p1Y, arrowHead);
-
-                                const p2X = x2 - nodeOffset * Math.cos(angle);
-                                const p2Y = y2 - nodeOffset * Math.sin(angle);
-                                drawArrow(ctx, p2X - 12 * Math.cos(angle), p2Y - 12 * Math.sin(angle), p2X, p2Y, arrowHead);
-                            }
-                            ctx.restore();
-                        }
-                    }
-                }
-            });
-
-            // 2. Etiquetas de Barras
-            bars.forEach((b, idx) => {
-                const n1 = nodes.find(n => n.id === b.n1);
-                const n2 = nodes.find(n => n.id === b.n2);
-                if (!n1 || !n2) return;
-
-                const x1 = toCanvasX(n1.x);
-                const y1 = toCanvasY(n1.y);
-                const x2 = toCanvasX(n2.x);
-                const y2 = toCanvasY(n2.y);
-
-                let textColor = '#9ca3af';
-                let textLabel = `B${b.id}`;
-
-                if (calculatedResults && calculatedResults[idx] !== undefined) {
-                    const val = calculatedResults[idx];
-                    const absValStr = formatNumber(Math.abs(val));
-
-                    if (Math.abs(val) < 1e-3) {
-                        textColor = '#9ca3af';
-                        textLabel = '0,000 t';
-                    } else if (val > 0) {
-                        textColor = '#60a5fa';
-                        textLabel = `(+) ${absValStr} t`;
-                    } else {
-                        textColor = '#f87171';
-                        textLabel = `(-) ${absValStr} t`;
-                    }
-                }
-
-                const midX = (x1 + x2) / 2;
-                const midY = (y1 + y2) / 2;
-
-                ctx.font = 'bold 12px sans-serif';
-                const textWidth = ctx.measureText(textLabel).width;
-                const padX = 6;
-                const padY = 4;
-                const boxWidth = textWidth + padX * 2;
-                const boxHeight = 14 + padY * 2;
-
-                ctx.fillStyle = bgColor;
-                ctx.fillRect(midX - boxWidth / 2, midY - boxHeight / 2, boxWidth, boxHeight);
-
-                ctx.fillStyle = textColor;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(textLabel, midX, midY);
-            });
-
-            // 3. Fuerzas/Reacciones AGRUPADAS POR NUDO
-            const arrowLen = 45;
-            const nodeOffset = 10;
-            let reactionsList = [];
-
-            // Agrupar todas las fuerzas/reacciones por ID de nudo
-            const forcesByNode = {};
-            forces.forEach(f => {
-                if (!forcesByNode[f.node]) {
-                    forcesByNode[f.node] = [];
-                }
-                forcesByNode[f.node].push(f);
-            });
-
-            // Obtener lista ordenada de nudos que tienen fuerzas aplicadas
-            const sortedNodeIds = Object.keys(forcesByNode).map(Number).sort((a, b) => a - b);
-
-            sortedNodeIds.forEach((nodeId, nodeIndex) => {
-                const nodeForces = forcesByNode[nodeId];
-                const n = nodes.find(node => node.id === nodeId);
-                if (!n) return;
-
-                const nx = toCanvasX(n.x);
-                const ny = toCanvasY(n.y);
-
-                // Asignar una letra secuencial al NUDO (A, B, C...)
-                const nodeLetter = getLetterLabel(nodeIndex);
-
-                // Recopilar componentes Fx y Fy de todas las cargas/reacciones presentes en este nudo
-                let totalFx = 0;
-                let totalFy = 0;
-                let isReactionFx = true;
-                let isReactionFy = true;
-                let labelFxOverride = null;
-                let labelFyOverride = null;
-
-                nodeForces.forEach(f => {
-                    if (Math.abs(f.fx) > 1e-3) {
-                        totalFx += f.fx;
-                        isReactionFx = f.isReaction !== false;
-                        if (f.label) labelFxOverride = f.label;
-                    }
-                    if (Math.abs(f.fy) > 1e-3) {
-                        totalFy += f.fy;
-                        isReactionFy = f.isReaction !== false;
-                        if (f.label) labelFyOverride = f.label;
-                    }
-                });
-
-                const hasFx = Math.abs(totalFx) > 1e-3;
-                const hasFy = Math.abs(totalFy) > 1e-3;
-                const hasBoth = hasFx && hasFy;
-
-                // Dibujar Componente Horizontal (Fx)
-                if (hasFx) {
-                    let letterTag = labelFxOverride ? labelFxOverride : (hasBoth ? `${nodeLetter}x` : nodeLetter);
-                    const effectiveFx = totalFx * dirX;
-                    const canvasDx = effectiveFx > 0 ? 1 : -1;
-                    const { drawTowardsNode } = getSmartForceDirection(nodeId, canvasDx, 0, toCanvasX, toCanvasY);
-
-                    let startX, endX, labelX, labelY;
-                    if (drawTowardsNode) {
-                        endX = nx - canvasDx * nodeOffset;
-                        startX = endX - canvasDx * arrowLen;
-                        labelX = startX - canvasDx * 12;
-                        labelY = ny;
-                    } else {
-                        startX = nx + canvasDx * nodeOffset;
-                        endX = startX + canvasDx * arrowLen;
-                        labelX = endX + canvasDx * 12;
-                        labelY = ny;
-                    }
-
-                    ctx.strokeStyle = isReactionFx ? '#f59e0b' : '#38bdf8';
-                    ctx.fillStyle = isReactionFx ? '#f59e0b' : '#38bdf8';
-                    ctx.lineWidth = 3;
-
-                    drawArrow(ctx, startX, ny, endX, ny, 10);
-                    drawForceBadge(ctx, letterTag, labelX, labelY, isReactionFx);
-
-                    reactionsList.push({
-                        label: letterTag,
-                        node: nodeId,
-                        type: isReactionFx ? 'Reacción' : 'Carga Externa',
-                        axis: 'Horizontal (Fx)',
-                        direction: effectiveFx > 0 ? 'Hacia +X' : 'Hacia -X',
-                        val: formatNumber(Math.abs(totalFx))
-                    });
-                }
-
-                // Dibujar Componente Vertical (Fy)
-                if (hasFy) {
-                    let letterTag = labelFyOverride ? labelFyOverride : (hasBoth ? `${nodeLetter}y` : nodeLetter);
-                    const effectiveFy = totalFy * dirY;
-                    const canvasDy = effectiveFy > 0 ? -1 : 1; 
-                    const { drawTowardsNode } = getSmartForceDirection(nodeId, 0, canvasDy, toCanvasX, toCanvasY);
-
-                    let startY, endY, labelX, labelY;
-                    if (drawTowardsNode) {
-                        endY = ny - canvasDy * nodeOffset;
-                        startY = endY - canvasDy * arrowLen;
-                        labelX = nx;
-                        labelY = startY - canvasDy * 12;
-                    } else {
-                        startY = ny + canvasDy * nodeOffset;
-                        endY = startY + canvasDy * arrowLen;
-                        labelX = nx;
-                        labelY = endY + canvasDy * 12;
-                    }
-
-                    ctx.strokeStyle = isReactionFy ? '#f59e0b' : '#38bdf8';
-                    ctx.fillStyle = isReactionFy ? '#f59e0b' : '#38bdf8';
-                    ctx.lineWidth = 3;
-
-                    drawArrow(ctx, nx, startY, nx, endY, 10);
-                    drawForceBadge(ctx, letterTag, labelX, labelY, isReactionFy);
-
-                    reactionsList.push({
-                        label: letterTag,
-                        node: nodeId,
-                        type: isReactionFy ? 'Reacción' : 'Carga Externa',
-                        axis: 'Vertical (Fy)',
-                        direction: effectiveFy > 0 ? 'Hacia +Y' : 'Hacia -Y',
-                        val: formatNumber(Math.abs(totalFy))
-                    });
-                }
-            });
-
-            updateReactionsTable(reactionsList);
-
-            // 4. Nudos
-            nodes.forEach(n => {
-                const nx = toCanvasX(n.x);
-                const ny = toCanvasY(n.y);
-
-                ctx.fillStyle = '#ffffff';
-                ctx.beginPath();
-                ctx.arc(nx, ny, 6, 0, 2 * Math.PI);
-                ctx.fill();
-
-                ctx.font = 'bold 11px sans-serif';
-                ctx.fillStyle = '#fbbf24';
-                ctx.textAlign = 'left';
-                ctx.fillText(`N${n.id}`, nx + 8, ny - 8);
-            });
-        }
-
-        function updateReactionsTable(reactionsList) {
-            const tbody = document.querySelector('#reactionsLegendTable tbody');
-            if (reactionsList.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6">No hay cargas o reacciones registradas</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = reactionsList.map(r => `
-                <tr>
-                    <td><b style="color: ${r.type === 'Reacción' ? '#d97706' : '#0284c7'}; font-size: 1rem;">${r.label}</b></td>
-                    <td>Nudo ${r.node}</td>
-                    <td>${r.type === 'Reacción' ? '<span class="type-badge-reaccion">Reacción</span>' : '<span class="type-badge-carga">Carga Externa</span>'}</td>
-                    <td>${r.axis}</td>
-                    <td>${r.direction}</td>
-                    <td><b>${r.val} t</b></td>
-                </tr>
-            `).join('');
-        }
-
-        function calculate() {
-            if (nodes.length === 0 || bars.length === 0) {
-                alert('Ingresá al menos nudos y barras para calcular.');
-                return;
-            }
-
-            const { gl } = evaluateIsostaticity();
-            if (gl > 0) {
-                alert(`⚠️ La estructura presenta ${gl} Grado(s) de Libertad libre(s) (hipostática). Agregá barras o apoyos.`);
-            }
-
-            let esfuerzos = Array(bars.length).fill(null);
-            let fuerzasNudos = {};
-
-            nodes.forEach(n => {
-                fuerzasNudos[n.id] = { fx: 0, fy: 0 };
-            });
-
-            forces.forEach(f => {
-                if (fuerzasNudos[f.node]) {
-                    fuerzasNudos[f.node].fx += f.fx;
-                    fuerzasNudos[f.node].fy += f.fy;
-                }
-            });
-
-            const getNudo = (id) => nodes.find(n => n.id === id);
-
-            let resueltoAlgo = true;
-            let iteraciones = 0;
-            const maxIteraciones = bars.length * 4;
-
-            while (resueltoAlgo && iteraciones < maxIteraciones) {
-                resueltoAlgo = false;
-                iteraciones++;
-
-                for (let nudo of nodes) {
-                    let barrasIncidentes = bars.map((b, idx) => ({ bar: b, origIndex: idx }))
-                        .filter(item => item.bar.n1 === nudo.id || item.bar.n2 === nudo.id);
-
-                    let barrasIncognitas = barrasIncidentes.filter(item => esfuerzos[item.origIndex] === null);
-
-                    if (barrasIncognitas.length === 1 || barrasIncognitas.length === 2) {
-                        let Fx_conocida = fuerzasNudos[nudo.id].fx;
-                        let Fy_conocida = fuerzasNudos[nudo.id].fy;
-
-                        barrasIncidentes.forEach(item => {
-                            let idx = item.origIndex;
-                            if (esfuerzos[idx] !== null) {
-                                let b = item.bar;
-                                let nudoOpuestoId = (b.n1 === nudo.id) ? b.n2 : b.n1;
-                                let nOp = getNudo(nudoOpuestoId);
-                                let dx = nOp.x - nudo.x;
-                                let dy = nOp.y - nudo.y;
-                                let L = Math.hypot(dx, dy);
-
-                                Fx_conocida += esfuerzos[idx] * (dx / L);
-                                Fy_conocida += esfuerzos[idx] * (dy / L);
-                            }
-                        });
-
-                        if (barrasIncognitas.length === 1) {
-                            let item1 = barrasIncognitas[0];
-                            let b1 = item1.bar;
-                            let nOp = getNudo((b1.n1 === nudo.id) ? b1.n2 : b1.n1);
-                            let dx = nOp.x - nudo.x;
-                            let dy = nOp.y - nudo.y;
-                            let L = Math.hypot(dx, dy);
-
-                            let cos = dx / L;
-                            let sen = dy / L;
-
-                            if (Math.abs(cos) > 1e-5) {
-                                esfuerzos[item1.origIndex] = -Fx_conocida / cos;
-                                resueltoAlgo = true;
-                            } else if (Math.abs(sen) > 1e-5) {
-                                esfuerzos[item1.origIndex] = -Fy_conocida / sen;
-                                resueltoAlgo = true;
-                            }
-                        } 
-                        else if (barrasIncognitas.length === 2) {
-                            let item1 = barrasIncognitas[0];
-                            let item2 = barrasIncognitas[1];
-
-                            let nOp1 = getNudo((item1.bar.n1 === nudo.id) ? item1.bar.n2 : item1.bar.n1);
-                            let nOp2 = getNudo((item2.bar.n1 === nudo.id) ? item2.bar.n2 : item2.bar.n1);
-
-                            let dx1 = nOp1.x - nudo.x, dy1 = nOp1.y - nudo.y, L1 = Math.hypot(dx1, dy1);
-                            let dx2 = nOp2.x - nudo.x, dy2 = nOp2.y - nudo.y, L2 = Math.hypot(dx2, dy2);
-
-                            let c1 = dx1 / L1, s1 = dy1 / L1;
-                            let c2 = dx2 / L2, s2 = dy2 / L2;
-
-                            let det = c1 * s2 - c2 * s1;
-
-                            if (Math.abs(det) > 1e-6) {
-                                let N1 = (-Fx_conocida * s2 - (-Fy_conocida) * c2) / det;
-                                let N2 = (c1 * (-Fy_conocida) - s1 * (-Fx_conocida)) / det;
-
-                                esfuerzos[item1.origIndex] = N1;
-                                esfuerzos[item2.origIndex] = N2;
-                                resueltoAlgo = true;
-                            }
-                        }
-                    }
-                }
-            }
-
-            let sinResolver = esfuerzos.filter(e => e === null).length;
-            if (sinResolver > 0) {
-                alert('⚠️ La estructura no se pudo resolver completamente por el Método de los Nudos. Verifique la triangulación o las condiciones de apoyo.');
-                return;
-            }
-
-            calculatedResults = esfuerzos;
-
-            let sortedBars = [];
-            let visitedBars = new Set();
-            let sortedNodes = [...nodes].sort((a, b) => a.id - b.id);
-
-            sortedNodes.forEach(node => {
-                bars.forEach((b, idx) => {
-                    if (!visitedBars.has(idx) && (b.n1 === node.id || b.n2 === node.id)) {
-                        let n1 = node.id;
-                        let n2 = (b.n1 === node.id) ? b.n2 : b.n1;
-                        sortedBars.push({ bar: b, origIndex: idx, displayN1: n1, displayN2: n2 });
-                        visitedBars.add(idx);
-                    }
-                });
-            });
-
-            bars.forEach((b, idx) => {
-                if (!visitedBars.has(idx)) {
-                    sortedBars.push({ bar: b, origIndex: idx, displayN1: b.n1, displayN2: b.n2 });
-                }
-            });
-
-            const tbody = document.querySelector('#resultsTable tbody');
-            tbody.innerHTML = '';
-
-            sortedBars.forEach(item => {
-                const b = item.bar;
-                const val = esfuerzos[item.origIndex];
-                let estado = '';
-                let cssClass = '';
-
-                if (Math.abs(val) < 1e-3) {
-                    estado = 'Nulo (0 t)';
-                    cssClass = 'tag-cero';
-                } else if (val > 0) {
-                    estado = 'Tracción';
-                    cssClass = 'tag-traccion';
-                } else {
-                    estado = 'Compresión';
-                    cssClass = 'tag-compresion';
-                }
-
-                tbody.innerHTML += `
-                    <tr>
-                        <td><b>B${b.id}</b></td>
-                        <td>N${item.displayN1} - N${item.displayN2}</td>
-                        <td>${formatNumber(Math.abs(val))}</td>
-                        <td class="${cssClass}">${estado}</td>
-                    </tr>
-                `;
-            });
-
-            drawResultsCanvas();
-        }
-
-        window.addEventListener('resize', () => {
-            drawPreviewCanvas();
-            drawResultsCanvas();
-        });
-    </script>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p><strong>Calculadora de Reticulados por Nudos</strong></p>
+            <p>Desarrollada con dedicación para la comunidad de ingeniería</p>
+            <p>
+                <a href="https://github.com/Marcos2274/Calculo-de-reticulado" target="_blank" rel="noopener">
+                    Ver en GitHub
+                </a>
+            </p>
+            <p style="margin-top: 15px; font-size: 0.9rem;">© 2026 Marcos Di Dio</p>
+        </div>
+    </footer>
 </body>
 </html>
