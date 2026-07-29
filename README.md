@@ -2,9 +2,10 @@
 
 Una aplicación web profesional para el análisis estructural de reticulados por el método de nudos, desarrollada por Marcos Di Dio.
 
-## 🌐 Demo en Vivo
+## 🌐 Sitio Web
 
-Visita la aplicación: [https://marcos2274.github.io/Calculo-de-reticulado/](https://marcos2274.github.io/Calculo-de-reticulado/)
+- **Página Principal**: [https://marcos2274.github.io/Calculo-de-reticulado/](https://marcos2274.github.io/Calculo-de-reticulado/)
+- **Aplicación Directa**: [https://marcos2274.github.io/Calculo-de-reticulado/app/calculadora.html](https://marcos2274.github.io/Calculo-de-reticulado/app/calculadora.html)
 
 ## ✨ Características Principales
 
@@ -87,18 +88,24 @@ git clone https://github.com/Marcos2274/Calculo-de-reticulado.git
 # Navegar al directorio
 cd Calculo-de-reticulado
 
-# Abrir index.html en tu navegador favorito
+# Opción 1: Abrir la landing page
+# Abre index.html en tu navegador
+
+# Opción 2: Ir directamente a la aplicación
+# Abre app/calculadora.html en tu navegador
 ```
 
-No requiere servidor ni dependencias. Es un archivo HTML autocontenido.
+No requiere servidor ni dependencias. Todo funciona con archivos HTML estáticos.
 
 ## 📁 Estructura del Proyecto
 
 ```
 Calculo-de-reticulado/
 │
-├── index.html          # Aplicación completa (HTML + CSS + JS embebido)
-└── README.md           # Documentación
+├── app/
+│   └── calculadora.html      # Aplicación completa (HTML + CSS + JS embebido)
+├── index.html                # Landing page del proyecto
+└── README.md                 # Documentación
 ```
 
 ## 🎓 Fundamentos de Ingeniería
