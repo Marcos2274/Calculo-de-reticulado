@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Calculadora de Reticulados por Nudos - Herramienta profesional para análisis de estructuras isostáticas">
-    <title>Calculadora de Reticulados por Nudos - Portal</title>
+    <meta name="description" content="Portfolio de Ingeniería - Marcos Di Dio - Herramientas y proyectos de análisis estructural">
+    <title>Marcos Di Dio - Portfolio de Ingeniería</title>
     <style>
         * {
             margin: 0;
@@ -22,42 +22,54 @@
             --gray-50: #f9fafb;
             --gray-100: #f3f4f6;
             --gray-200: #e5e7eb;
+            --gray-400: #9ca3af;
             --gray-600: #4b5563;
+            --gray-700: #374151;
             --gray-800: #1f2937;
             --gray-900: #111827;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: white;
             min-height: 100vh;
             color: var(--gray-800);
-        }
-
-        .watermark {
-            position: fixed;
-            top: 15px;
-            right: 20px;
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 600;
-            z-index: 9999;
-            pointer-events: none;
-            user-select: none;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            margin: 0;
+            padding: 0;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 0 20px;
         }
 
         /* Hero Section */
         .hero {
             text-align: center;
-            padding: 60px 20px;
+            padding: 140px 20px 80px;
             color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero .container {
+            position: relative;
+            z-index: 1;
         }
 
         .hero h1 {
@@ -110,143 +122,12 @@
         }
 
         /* Content Section */
-        .content-section {
-            background: white;
-            border-radius: 20px;
-            padding: 50px 40px;
-            margin-top: 40px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-        }
-
-        .content-section h2 {
-            text-align: center;
-            font-size: 2.2rem;
-            color: var(--gray-900);
-            margin-bottom: 40px;
-            font-weight: 700;
-        }
-
-        /* Feature Cards */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
-        }
-
-        .feature-card {
-            background: var(--gray-50);
-            padding: 30px;
-            border-radius: 12px;
-            border: 2px solid var(--gray-200);
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            border-color: var(--purple);
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .feature-card h3 {
-            font-size: 1.4rem;
-            margin-bottom: 12px;
-            color: var(--gray-900);
-            font-weight: 600;
-        }
-
-        .feature-card p {
-            color: var(--gray-600);
-            line-height: 1.6;
-            font-size: 1rem;
-        }
-
-        /* Capabilities List */
-        .capabilities {
-            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-            padding: 35px;
-            border-radius: 12px;
-            margin-bottom: 40px;
-        }
-
-        .capabilities h3 {
-            font-size: 1.6rem;
-            margin-bottom: 20px;
-            color: var(--purple-dark);
-            font-weight: 700;
-            text-align: center;
-        }
-
-        .capabilities-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-        }
-
-        .capability-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            font-size: 1rem;
-            color: var(--gray-800);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .capability-item::before {
-            content: "✓";
-            font-weight: bold;
-            color: var(--green);
-            font-size: 1.3rem;
-            flex-shrink: 0;
-        }
-
-        /* Tech Stack */
-        .tech-stack {
-            text-align: center;
-            padding: 30px;
-            background: var(--gray-50);
-            border-radius: 12px;
-        }
-
-        .tech-stack h3 {
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            color: var(--gray-800);
-            font-weight: 600;
-        }
-
-        .tech-badges {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .tech-badge {
-            background: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-weight: 600;
-            color: var(--gray-700);
-            border: 2px solid var(--gray-200);
-            font-size: 0.95rem;
-        }
-
         /* Footer */
         .footer {
-            text-align: center;
-            padding: 30px 20px;
+            background: var(--gray-900);
             color: white;
-            margin-top: 50px;
+            text-align: center;
+            padding: 40px 20px;
         }
 
         .footer p {
@@ -268,6 +149,10 @@
 
         /* Responsive */
         @media (max-width: 768px) {
+            .hero {
+                padding-top: 120px;
+            }
+
             .hero h1 {
                 font-size: 2rem;
             }
@@ -289,8 +174,25 @@
                 padding: 30px 20px;
             }
 
-            .content-section h2 {
-                font-size: 1.8rem;
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .section-subtitle {
+                font-size: 1rem;
+            }
+
+            .navbar .logo {
+                font-size: 1.2rem;
+            }
+
+            .navbar nav a {
+                margin-left: 15px;
+                font-size: 0.9rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
             }
 
             .features-grid {
@@ -300,13 +202,23 @@
             .capabilities-list {
                 grid-template-columns: 1fr;
             }
+
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .contact-btn {
+                width: 100%;
+                max-width: 300px;
+            }
         }
 
-        /* Animation */
+        /* Scroll Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(50px);
             }
             to {
                 opacity: 1;
@@ -314,108 +226,550 @@
             }
         }
 
-        .hero, .content-section {
-            animation: fadeInUp 0.8s ease-out;
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transition: all 0.8s ease-out;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+        }
+
+        .fade-up {
+            transform: translateY(50px);
+        }
+
+        .fade-up.animated {
+            transform: translateY(0);
+        }
+
+        .fade-left {
+            transform: translateX(-50px);
+        }
+
+        .fade-left.animated {
+            transform: translateX(0);
+        }
+
+        .fade-right {
+            transform: translateX(50px);
+        }
+
+        .fade-right.animated {
+            transform: translateX(0);
+        }
+
+        .scale-in {
+            transform: scale(0.9);
+        }
+
+        .scale-in.animated {
+            transform: scale(1);
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.hidden {
+            transform: translateY(-100%);
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--purple-dark);
+        }
+
+        .navbar nav a {
+            margin-left: 30px;
+            text-decoration: none;
+            color: var(--gray-800);
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .navbar nav a:hover {
+            color: var(--purple);
+        }
+
+        /* Projects Section */
+        .projects-section {
+            padding: 80px 20px;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--gray-900);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--gray-600);
+            margin-bottom: 60px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border: 2px solid var(--gray-200);
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            border-color: var(--purple);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, var(--purple) 0%, var(--blue) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .project-content {
+            padding: 30px;
+        }
+
+        .project-title {
+            font-size: 1.6rem;
+            color: var(--gray-900);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .project-description {
+            color: var(--gray-600);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .project-tag {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .project-link {
+            display: inline-block;
+            background: var(--purple);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .project-link:hover {
+            background: var(--purple-dark);
+            transform: translateX(5px);
+        }
+
+        /* About Section */
+        .about-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 100px 20px;
+            color: white;
+        }
+
+        .about-content {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .about-content p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            opacity: 0.95;
+        }
+
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .skill-item {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 80px 20px;
+            background: var(--gray-50);
+        }
+
+        .contact-content {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--purple);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .contact-btn:hover {
+            background: var(--purple-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .hero {
+            padding-top: 140px;
         }
     </style>
 </head>
 <body>
-    <div class="watermark">Desarrollado por Marcos Di Dio</div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">Marcos Di Dio</div>
+            <div>
+                <a href="#inicio">Inicio</a>
+                <a href="#proyectos">Proyectos</a>
+                <a href="#sobre-mi">Sobre Mí</a>
+                <a href="#contacto">Contacto</a>
+            </div>
+        </div>
+    </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section id="inicio" class="hero">
         <div class="container">
-            <h1>Calculadora de Reticulados por Nudos</h1>
-            <p class="subtitle">Herramienta Profesional para Análisis Estructural</p>
-            <p class="description">
-                Diseñada para estudiantes e ingenieros civiles y estructurales que necesitan 
-                analizar y calcular estructuras reticuladas isostáticas de manera rápida y precisa.
+            <h1 class="animate-on-scroll fade-up">Portfolio de Ingeniería Estructural</h1>
+            <p class="subtitle animate-on-scroll fade-up" style="animation-delay: 0.2s;">Desarrollador de Herramientas de Análisis y Cálculo</p>
+            <p class="description animate-on-scroll fade-up" style="animation-delay: 0.3s;">
+                Especializado en crear soluciones web para análisis estructural, 
+                facilitando el trabajo de estudiantes e ingenieros civiles.
             </p>
-            <a href="./app/calculadora.html" class="cta-button">
-                Empezar a Calcular
+            <a href="#proyectos" class="cta-button animate-on-scroll fade-up" style="animation-delay: 0.4s;">
+                Ver Proyectos
             </a>
         </div>
     </section>
 
-    <!-- Content Section -->
-    <div class="container">
-        <div class="content-section">
-            <h2>¿Qué es esta herramienta?</h2>
+    <!-- Projects Section -->
+    <section id="proyectos" class="projects-section">
+        <div class="container">
+            <h2 class="section-title animate-on-scroll fade-up">Proyectos Destacados</h2>
+            <p class="section-subtitle animate-on-scroll fade-up">
+                Herramientas y aplicaciones desarrolladas para facilitar el análisis estructural
+            </p>
             
-            <!-- Feature Cards -->
-            <div class="features-grid">
-                <div class="feature-card">
-                    <span class="feature-icon">⬢</span>
-                    <h3>Método de Nudos</h3>
-                    <p>Implementación completa del método clásico de análisis estructural por nudos, 
-                    con resolución iterativa de ecuaciones de equilibrio.</p>
+            <div class="projects-grid">
+                <!-- Project 1: Calculadora de Reticulados -->
+                <div class="project-card animate-on-scroll scale-in">
+                    <div class="project-image">
+                        <span style="font-size: 5rem;">⬡</span>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Calculadora de Reticulados</h3>
+                        <p class="project-description">
+                            Aplicación web completa para el análisis de estructuras reticuladas mediante el 
+                            método de nudos. Incluye diagnóstico de isoestaticidad, visualización interactiva 
+                            y cálculo de esfuerzos internos.
+                        </p>
+                        <div class="project-tags">
+                            <span class="project-tag">HTML5</span>
+                            <span class="project-tag">JavaScript</span>
+                            <span class="project-tag">Canvas API</span>
+                            <span class="project-tag">Análisis Estructural</span>
+                        </div>
+                        <a href="./app/calculadora.html" class="project-link">Ver Proyecto →</a>
+                    </div>
                 </div>
 
-                <div class="feature-card">
-                    <span class="feature-icon">▣</span>
-                    <h3>Diagnóstico Automático</h3>
-                    <p>Evaluación instantánea de isoestaticidad mediante la fórmula GL = 2n - b - r. 
-                    Detecta estructuras isostáticas, hipostáticas e hiperestáticas.</p>
+                <!-- Project 2: Placeholder para futuro proyecto -->
+                <div class="project-card animate-on-scroll scale-in" style="opacity: 0.6;">
+                    <div class="project-image" style="background: linear-gradient(135deg, var(--blue) 0%, var(--green) 100%);">
+                        <span style="font-size: 5rem;">▢</span>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Próximamente</h3>
+                        <p class="project-description">
+                            Nuevo proyecto en desarrollo. Herramienta para análisis de vigas y diagramas 
+                            de momento flector y cortante.
+                        </p>
+                        <div class="project-tags">
+                            <span class="project-tag">En Desarrollo</span>
+                        </div>
+                        <a href="#" class="project-link" style="background: var(--gray-400); cursor: not-allowed;">Próximamente</a>
+                    </div>
                 </div>
 
-                <div class="feature-card">
-                    <span class="feature-icon">◉</span>
-                    <h3>Visualización Interactiva</h3>
-                    <p>Canvas HTML5 con zoom, paneo y múltiples orientaciones de ejes. 
-                    Visualiza fuerzas de tracción y compresión en tiempo real.</p>
+                <!-- Project 3: Placeholder para futuro proyecto -->
+                <div class="project-card animate-on-scroll scale-in" style="opacity: 0.6;">
+                    <div class="project-image" style="background: linear-gradient(135deg, var(--green) 0%, var(--purple) 100%);">
+                        <span style="font-size: 5rem;">△</span>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">Próximamente</h3>
+                        <p class="project-description">
+                            Calculadora de armaduras de hormigón. Dimensionamiento de secciones y 
+                            verificación de resistencia según normativas.
+                        </p>
+                        <div class="project-tags">
+                            <span class="project-tag">En Desarrollo</span>
+                        </div>
+                        <a href="#" class="project-link" style="background: var(--gray-400); cursor: not-allowed;">Próximamente</a>
+                    </div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <!-- Capabilities -->
-            <div class="capabilities">
-                <h3>Capacidades de la Aplicación</h3>
-                <div class="capabilities-list">
-                    <div class="capability-item">Definición gráfica de nodos y barras</div>
-                    <div class="capability-item">Cálculo de esfuerzos internos (tracción/compresión)</div>
-                    <div class="capability-item">Diferenciación entre reacciones y cargas externas</div>
-                    <div class="capability-item">Guardado y carga de proyectos en JSON</div>
-                    <div class="capability-item">Sistema de deshacer/rehacer ilimitado</div>
-                    <div class="capability-item">Edición en línea de todos los elementos</div>
-                    <div class="capability-item">Fuerzas por componentes o por geometría</div>
-                    <div class="capability-item">Tablas detalladas de resultados</div>
-                    <div class="capability-item">Exportación de datos del proyecto</div>
-                    <div class="capability-item">4 orientaciones de ejes configurables</div>
-                </div>
+    <!-- About Section -->
+    <section id="sobre-mi" class="about-section">
+        <div class="about-content animate-on-scroll fade-up">
+            <h2>Sobre Mí</h2>
+            <p>
+                Soy desarrollador especializado en crear herramientas web para ingeniería civil y estructural. 
+                Mi objetivo es facilitar el trabajo de cálculo y análisis mediante aplicaciones intuitivas y precisas.
+            </p>
+            <p>
+                Con experiencia en análisis estructural y desarrollo web, combino ambos mundos para crear 
+                soluciones prácticas que ayuden a estudiantes y profesionales en su trabajo diario.
+            </p>
+            
+            <div class="skills-list">
+                <span class="skill-item">Análisis Estructural</span>
+                <span class="skill-item">HTML5 & CSS3</span>
+                <span class="skill-item">JavaScript</span>
+                <span class="skill-item">Canvas API</span>
+                <span class="skill-item">Diseño Responsivo</span>
+                <span class="skill-item">Método de Nudos</span>
+                <span class="skill-item">Cálculo de Estructuras</span>
             </div>
+        </div>
+    </section>
 
-            <!-- Tech Stack -->
-            <div class="tech-stack">
-                <h3>Tecnologías Utilizadas</h3>
-                <div class="tech-badges">
-                    <span class="tech-badge">HTML5</span>
-                    <span class="tech-badge">CSS3</span>
-                    <span class="tech-badge">JavaScript</span>
-                    <span class="tech-badge">Canvas API</span>
-                    <span class="tech-badge">Responsive Design</span>
-                </div>
-            </div>
-
-            <!-- CTA Bottom -->
-            <div style="text-align: center; margin-top: 50px;">
-                <a href="./app/calculadora.html" class="cta-button">
-                    Abrir la Aplicación
+    <!-- Contact Section -->
+    <section id="contacto" class="contact-section">
+        <div class="contact-content">
+            <h2 class="section-title animate-on-scroll fade-up">Contacto</h2>
+            <p class="section-subtitle animate-on-scroll fade-up">
+                ¿Tienes alguna pregunta o sugerencia? ¡Me encantaría saber de ti!
+            </p>
+            
+            <div class="contact-links">
+                <a href="https://github.com/Marcos2274" target="_blank" rel="noopener" class="contact-btn animate-on-scroll fade-left">
+                    GitHub
+                </a>
+                <a href="https://github.com/Marcos2274/Calculo-de-reticulado" target="_blank" rel="noopener" class="contact-btn animate-on-scroll fade-right">
+                    Ver Repositorio
                 </a>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p><strong>Calculadora de Reticulados por Nudos</strong></p>
-            <p>Desarrollada con dedicación para la comunidad de ingeniería</p>
-            <p>
-                <a href="https://github.com/Marcos2274/Calculo-de-reticulado" target="_blank" rel="noopener">
-                    Ver en GitHub
-                </a>
-            </p>
-            <p style="margin-top: 15px; font-size: 0.9rem;">© 2026 Marcos Di Dio</p>
+            <p><strong>Marcos Di Dio - Portfolio de Ingeniería</strong></p>
+            <p>Desarrollando herramientas para la comunidad de ingeniería</p>
+            <p style="margin-top: 15px; font-size: 0.9rem;">© 2026 Todos los derechos reservados</p>
         </div>
     </footer>
+
+    <!-- Scroll Animation Script -->
+    <script>
+        // Intersection Observer para animaciones al hacer scroll
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        // Observar todos los elementos con clase animate-on-scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            const animatedElements = document.querySelectorAll('.animate-on-scroll');
+            animatedElements.forEach(el => observer.observe(el));
+
+            // Navbar scroll behavior
+            let lastScroll = 0;
+            const navbar = document.querySelector('.navbar');
+            
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                
+                if (currentScroll <= 100) {
+                    navbar.classList.remove('hidden');
+                } else if (currentScroll > lastScroll && currentScroll > 200) {
+                    navbar.classList.add('hidden');
+                } else {
+                    navbar.classList.remove('hidden');
+                }
+                
+                lastScroll = currentScroll;
+            });
+
+            // Smooth scroll para links de navegación
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        const offsetTop = target.offsetTop - 80;
+                        window.scrollTo({
+                            top: offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
